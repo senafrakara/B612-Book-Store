@@ -29,31 +29,31 @@ defined('BASEPATH') or exit('No direct script access allowed');
         <div class="header-mid">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="logo">
                             <div class="lname"><a href=""><span><img src="<?= base_url('style/img/logo.png') ?>"> B612</span> Book Shop</a></div>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-9 text-center">
-                                <?php if ($this->session->userdata('logged_in') == FALSE) : ?>
-
-                                    <a href="<?= base_url() ?>users/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
-                                    <a href="<?= base_url() ?>users/registration" class="btn-login"><i class="fas fa-user-cog"></i> Register</a>
-
-                                <?php endif; ?>
+                                <div class="search-bar">
+                                    <?= form_open('users/search') ?>
+                                    <span class="sb"><input type="search" name="search" placeholder="Find your books"></span>
+                                    <span class="sb"><input type="submit" value="Search"></span>
+                                    <?= form_close() ?>
+                                </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="ic-cart"><a href="<?= base_url() ?>cart"><i class="fas fa-shopping-cart"></i> Cart</a></div>
-                           
+                                <div class="ic-cart"><a href="<?= base_url() ?>"><i class="fas fa-shopping-cart"></i> Cart</a></div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
- 
+
         <div>
             <?php $this->load->view('include/menu'); ?>
         </div>
@@ -72,38 +72,53 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <div>
         <?php $this->load->view('include/slider'); ?>
     </div>
-    
+
+    <?php foreach ($categories as $cat) : ?>
+
+        <?php if ($cat->category == 'Science') {
+            $scienceTag = $cat->tag;
+        } elseif ($cat->category == 'Novel') {
+            $novelTag = $cat->tag;
+        } elseif ($cat->category == 'Literature') {
+            $literatureTag = $cat->tag;
+        }
+
+        ?>
+
+    <?php endforeach; ?>
+
     <div class="section-padding after-slider">
         <div class="container">
-            <div class="section-title"><a href="<?= base_url() ?>">recent Books</a></div>
-            <div><?php 
-            
-            ?></div>
+            <div class="section-title"><a href="<?= base_url('users/allBooks') ?>">Recent Books</a></div>
+            <div><?php
+                    $this->load->view('include/recentBooks')
+                    ?></div>
         </div>
     </div>
 
     <div class="section-padding">
         <div class="container">
-            <div class="section-title"><a href="<?= base_url() ?>">Literature</a></div>
+            <div class="section-title"><a href="<?= base_url('users/allBooks/?cat=' . $literatureTag . '') ?>">Literature</a></div>
             <div><?php
-        
-            ?></div>
+                    $this->load->view('include/literatureBooks')
+                    ?></div>
         </div>
     </div>
     <div class="section-padding">
         <div class="container">
-            <div class="section-title"><a href="<?= base_url() ?>">Science</a></div>
+            <div class="section-title"><a href="<?= base_url('users/allBooks/?cat=' . $scienceTag . '') ?>">Science</a></div>
             <div><?php
-        
-            ?></div>
+                    $this->load->view('include/scienceBooks')
+
+                    ?></div>
         </div>
     </div>
     <div class="section-padding">
         <div class="container">
-            <div class="section-title"><a href="<?= base_url() ?>">Novel</a></div>
+            <div class="section-title"><a href="<?= base_url('users/allBooks/?cat=' . $novelTag . '') ?>">Novel</a></div>
             <div><?php
-        
-            ?></div>
+                    $this->load->view('include/novelBooks')
+                    ?></div>
         </div>
     </div>
 
@@ -125,7 +140,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <ul>
                             <li><a href="<?= base_url('') ?>">Buy Books</a></li>
                             <li><a href="<?= base_url('') ?>">Find E-books</a></li>
-                        
+
                         </ul>
                     </div>
                 </div>

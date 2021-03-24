@@ -56,7 +56,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-padding {
-    padding: 60px 0;
+    padding: 30px 0;
 }
 
 .section-title {
@@ -190,7 +190,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .menu ul li {
     display: inline-block;
-    margin-right: 5%;
+    margin-right: 15px;
 }
 
 .menu ul li a {
@@ -201,7 +201,7 @@ h1, h2, h3, h4, h5, h6 {
     transition: .4s;
     text-transform: uppercase;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .menu ul li:hover a {
@@ -238,6 +238,7 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     position: relative;
     font-size: 16px;
+    margin-top: 0px;
 }
 
 .ctg-btn:hover {
@@ -380,7 +381,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .search-bar {
     text-align: right;
-    margin-top: 15px;
+    margin-top: -35px;
 }
 
 span input[type="search"] {
@@ -567,6 +568,7 @@ span.sb input[type="submit"] {
 form {
     margin-top: 45px;
 }
+
 
 form#user-search {
     margin-top: 2px;
@@ -853,16 +855,20 @@ small a {
 /* ========= Users Books view CSS ========= */
 
 #book-image img {
-    width: 100%;
+    /* width: 100%;
     height: 180px;
     background-position: center;
+    background-size: cover; */
+    background-position: center;
     background-size: cover;
+    max-height: 250px;
+    width: auto;
 }
 
 #single-book {
     border: 1px solid #f0f0f0;
     display: block;
-    transition: .4s;
+    transition: 4.4s;
     position: relative;
     margin-bottom: 10px;
     width: 100%;
@@ -900,6 +906,13 @@ small a {
 #single-book:hover #addto-cart a {
     opacity: 1;
     visibility: visible;
+}
+
+#book-image {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
 }
 
 #book-image:after {

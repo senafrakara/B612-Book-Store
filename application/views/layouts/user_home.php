@@ -45,6 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                               <div class="admin-search">
                          
                               </div>
+                              
                             </div>
                             <div class="col-md-3">
                                 <div class="ic-cart"><a href="<?= base_url()?>cart"><i class="fas fa-shopping-cart"></i> Cart</a></div>

@@ -64,8 +64,8 @@ class Admin extends CI_Controller
 
         $config = [
             'upload_path' => './uploads/image/',
-            'allowed_types' => 'jpg|png',
-            'max_size' => '400',
+            'allowed_types' => 'jpg|png|jpeg|jpe|jfif',
+            'max_size' => '800',
             'overwrite' => FALSE
         ];
 
@@ -80,14 +80,15 @@ class Admin extends CI_Controller
         $this->form_validation->set_rules('categoryId', 'Category', 'trim|required');
 
 
-        if (($this->form_validation->run() && $this->upload->do_upload()) == FALSE) {
+        if ($this->form_validation->run() == FALSE) {
 
             $view['admin_view'] = "admin/addBook";
             $this->load->view('layouts/admin_layout', $view);
         } else {
 
-            $data = $this->upload->data();
-            $image_path = base_url("uploads/image/" . $data['raw_name'] . $data['file_ext']);
+            
+            $dataImg = $this->uploadFile($config, 'userfile');
+            $image_path = base_url("uploads/image/" . $dataImg['raw_name'] . $dataImg['file_ext']);
 
             $data = array(
                 'book_name' => $this->input->post('book_name'),
@@ -136,7 +137,7 @@ class Admin extends CI_Controller
 
         $config = [
             'upload_path' => './uploads/image/',
-            'allowed_types' => 'jpg|png',
+            'allowed_types' => 'jpg|png|jpeg|jpe|jfif',
             'max_size' => '800',
             'overwrite' => TRUE
         ];
@@ -165,11 +166,9 @@ class Admin extends CI_Controller
             }
         } else {
 
-            $dataImg = $this->upload->data();
+            $dataImg = $this->uploadFile($config, 'userfile');
             $image_path = base_url("uploads/image/" . $dataImg['raw_name'] . $dataImg['file_ext']);
-
            
-
             if (!empty($_FILES['userfile']['name'])) {
 
                 $data = array(
@@ -415,7 +414,7 @@ class Admin extends CI_Controller
 
         $config_img = [
             'upload_path' => './uploads/image/',
-            'allowed_types' => 'jpg|png',
+            'allowed_types' => 'jpg|png|jpeg|jpe|jfif',
             'overwrite' => FALSE
         ];
         $config_file = [
@@ -504,7 +503,7 @@ class Admin extends CI_Controller
 
         $config_img = [
             'upload_path' => './uploads/image/',
-            'allowed_types' => 'jpg|png',
+            'allowed_types' => 'jpg|png|jpeg|jpe|jfif',
             'overwrite' => FALSE
         ];
         $config_file = [

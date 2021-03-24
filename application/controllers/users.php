@@ -131,7 +131,6 @@ class Users extends CI_Controller
 					redirect('admin/index');
                 } elseif($user->type == 'U')
                 {
-                    $this->session->set_flashdata('login_success', 'Welcome, '.$this->session->userdata('name').'. You are logged in successfully');
 					redirect('home');
                 }
             } else 
@@ -294,6 +293,25 @@ class Users extends CI_Controller
 
         $this->session->set_flashdata('success', '<i class= "fas fa-trash text-danger"></i> Comment deleted successfully');
         redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    public function search()
+    {
+        $this->load->model('admin_model');
+        $view['categories'] = $this->admin_model->getCategory();
+
+        $this->form_validation->set_rules('search', "Search",'trim|required|strip_tags[search_book]');
+        if(!$this->form_validation->run())
+        {
+            redirect('home');
+        } else 
+        {
+            $search = $this->input->post('search');
+            $this->load->model('user_model');
+            $view['books'] = $this->user_model->search($search);
+            $view['user_view'] = 'users/searchView';
+            $this->load->view('layouts/user_layout', $view);
+        }
     }
 
 }
