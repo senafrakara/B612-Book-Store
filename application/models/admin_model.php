@@ -11,6 +11,8 @@ class admin_model extends CI_Model
     public $bookTable = 'books';
     public $catTable = 'category';
     public $ebooksTable= 'ebooks';
+    public $orders = 'orders';
+    public $orderItems = 'order_items';
 
 
     public function booksNumRows() //for pagination
@@ -152,5 +154,22 @@ class admin_model extends CI_Model
     {
         $result = $this->db->where('id', $id)->update($this->ebooksTable, $bookData);
         return $result;
+    }
+
+    public function getOrders()
+    {
+        $this->db->order_by('orderId', 'DESC');
+        $orders = $this->db->get($this->orders);  
+        return $orders->result();
+    }
+
+    public function getOrderDetail($id)
+    {
+        $this->db->select('orders.*, users.name, users.surname');
+        $this->db->from($this->orders);
+        $this->db->join($this->tableName, 'orders.userId=users.id');
+        $this->db->where('orders.orderId', $id);
+        $order= $this->db->get();
+        return $order->row();
     }
 }

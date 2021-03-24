@@ -836,6 +836,37 @@ small a {
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%);
 }
 
+.cart-row {
+    display: flex;
+    align-items: flex-start;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+
+}
+
+.row-image {
+    width: 100px;
+}
+
+
+.quantity {
+    display: inline-block;
+    font-weight: 700;
+    padding-right: 10px;
+
+
+}
+
+
+.box-element {
+    box-shadow: hsl(0, 0%, 80%) 0 0 16px;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+
 .leave-review{
     font-weight: 700;
     line-height: 1.2;
@@ -1156,6 +1187,35 @@ ul.custom-pagination li.active a:hover {
     text-align: center;
 }
 
+.account-dropdown{
+    width: 25%;
+
+}
+.account-dropdown .dropdown-menu{
+    background-color: transparent !important;
+}
+.account-dropdown .dropdown-menu a{
+    background-color: transparent !important;
+    color: #9c3ad1 !important;
+}
+.account-dropdown .dropdown-menu a:hover{
+   background-color: #9c3ad1 !important;
+   color: #fff  !important;
+}
+.dropdown-menu.custom-dropdown.show {
+    transform: translate3d(0px, 38px, 0px) !important;
+}
+
+a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button {
+    padding: 1rem !important;
+    background-color: #7cacfd !important;
+    margin: 5px;
+}
+a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover{
+
+    background-color: #a6c4f6 !important;
+    
+}
 .fb {
     background: #3B5998;
     border: 1px solid #3B5998;

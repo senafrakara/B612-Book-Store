@@ -8,21 +8,23 @@ class user_model extends CI_Model
         parent::__construct();
     }
 
-    public $tableName = 'users';
+    public $userTable = 'users';
     public $bookTable = 'books';
     public $catTable = 'category';
     public $ebooksTable = 'ebooks';
     public $comments = 'comments';
+    public $orders = 'orders';
+    public $orderItems = 'order_items';
 
     public function add_user($data)
     {
-        $insert = $this->db->insert($this->tableName, $data);
+        $insert = $this->db->insert($this->userTable, $data);
         return $insert;
     }
 
     public function login($email, $pass)
     {
-        $query = $this->db->get_where($this->tableName, array('email' => $email));
+        $query = $this->db->get_where($this->userTable, array('email' => $email));
         if ($query->num_rows() > 0) {
             $db_password = $query->row('password');
             if (password_verify($pass, $db_password)) {
@@ -76,7 +78,7 @@ class user_model extends CI_Model
     public function getComments($id)
     {
         $this->db->select('*');
-        $this->db->from($this->tableName);
+        $this->db->from($this->userTable);
         $this->db->join($this->comments, 'comments.userId = users.id');
         $this->db->where('comments.bookId', $id);
         $this->db->order_by('comments.id', 'DESC');
@@ -94,7 +96,7 @@ class user_model extends CI_Model
     public function getCommentsCommentField()
     {
         $this->db->select('*');
-        $this->db->from($this->tableName);
+        $this->db->from($this->userTable);
         $this->db->join($this->comments, 'comments.userId = users.id');
         $this->db->where('comments.bookId', $this->uri->segment(3));
         $this->db->order_by('comments.id', 'DESC');
@@ -187,6 +189,40 @@ class user_model extends CI_Model
         $this->db->limit(5);
         $query = $this->db->get();
         return $query->result();
+    }
+
+    public function getUser($uid)
+    {
+        $user = $this->db->get_where($this->userTable, array('id' => $uid));
+        return $user->row();
+    }
+
+    public function getOrders()
+    {
+        $this->db->order_by('orderId', 'DESC');
+        $orders = $this->db->get_where($this->orders, array('userId' => $this->session->userdata('id')));  
+        return $orders->result();
+    }
+
+    public function getOrderDetail($id)
+    {
+        $this->db->select('orders.*, users.name, users.surname');
+        $this->db->from($this->orders);
+        $this->db->join($this->userTable, 'orders.userId=users.id');
+        $this->db->where('orders.orderId', $id);
+        $order= $this->db->get();
+        return $order->row();
+    }
+
+    public function getOrderItems($orderID)
+    {
+        $this->db->select('books.id, books.book_name, books.price, books.book_image, order_items.total_price, order_items.quantity');
+        $this->db->from($this->orderItems);
+        $this->db->join($this->bookTable, 'order_items.bookId = books.id');
+        $this->db->where('order_items.orderId', $orderID);
+        $orderItems = $this->db->get();
+       
+        return $orderItems->result();
     }
 
     public function search($search)

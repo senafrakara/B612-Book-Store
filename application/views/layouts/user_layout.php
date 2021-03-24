@@ -32,7 +32,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 <div class="row">
                     <div class="col-md-5">
                         <div class="logo">
-                            <div class="lname"><a href="<?= base_url() ?>home"><span><img src="<?= base_url('style/img/logo.png') ?>"> B612</span> Book Store</a></div>
+                            <div class="lname"><a href="<?= base_url('home') ?>"><span><img src="<?= base_url('style/img/logo.png') ?>"> B612</span> Book Store</a></div>
                         </div>
                     </div>
                     <div class="col-md-7">
