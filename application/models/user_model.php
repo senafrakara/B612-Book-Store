@@ -15,6 +15,7 @@ class user_model extends CI_Model
     public $comments = 'comments';
     public $orders = 'orders';
     public $orderItems = 'order_items';
+    public $favorites = 'favorites';
 
     public function add_user($data)
     {
@@ -200,7 +201,7 @@ class user_model extends CI_Model
     public function getOrders()
     {
         $this->db->order_by('orderId', 'DESC');
-        $orders = $this->db->get_where($this->orders, array('userId' => $this->session->userdata('id')));  
+        $orders = $this->db->get_where($this->orders, array('userId' => $this->session->userdata('id')));
         return $orders->result();
     }
 
@@ -210,7 +211,7 @@ class user_model extends CI_Model
         $this->db->from($this->orders);
         $this->db->join($this->userTable, 'orders.userId=users.id');
         $this->db->where('orders.orderId', $id);
-        $order= $this->db->get();
+        $order = $this->db->get();
         return $order->row();
     }
 
@@ -221,25 +222,74 @@ class user_model extends CI_Model
         $this->db->join($this->bookTable, 'order_items.bookId = books.id');
         $this->db->where('order_items.orderId', $orderID);
         $orderItems = $this->db->get();
-       
+
         return $orderItems->result();
     }
 
     public function search($search)
     {
         $s = str_replace(" ", "|", $search);
-        // $this->db->select("*");
-        // $this->db->from($this->bookTable);
-        // $this->db->where("book_name RLIKE '$query'");
-        // $this->db->where("status", 1);
-        // $this->db->or_where("author RLIKE '$query'");
+        $this->db->select("*");
+        $this->db->from($this->bookTable);
+        $this->db->where("book_name RLIKE '$s'");
+        $this->db->where("status", 1);
+        $this->db->or_where("author RLIKE '$s'");
+        $result = $this->db->get();
+        if($result->num_rows() == 0)
+        {
+            return 0;
+            
+        }
+        else {
+            return $result->result();
+        }
+        
+    }
 
-        // $this->db->query('SELECT * FROM table_name1 UNION SELECT column_name(s) FROM table_name2');
+    public function addFavoriteList($data)
+    {
+        $insert = $this->db->insert($this->favorites, $data);
+        return $insert;
+    }
 
-        $query = "SELECT DISTINCT * FROM " . $this->bookTable . ", " . $this->ebooksTable . " WHERE books.book_name RLIKE ".$this->db->escape($s)." || ebooks.ebook_name RLIKE ".$this->db->escape($s)." || books.author RLIKE ".$this->db->escape($s)." || ebooks.author RLIKE ".$this->db->escape($s)."";
+    public function removeFromFavoriteList($data)
+    {
 
-        $result =$this->db->query($query);
+        return $this->db->delete($this->favorites, array('book_id' => $data['book_id'], 'user_id' => $data['user_id']));
+    }
 
-        return $result->result();
+    public function isInFavoriteList($data = array())
+    {
+
+        $user = $data['user_id'];
+        $book = $data['book_id'];
+
+        $isFavorited = $this->db->get_where($this->favorites, array('user_id' => $user, 'book_id' => $book));
+
+        return $isFavorited->row();
+    }
+
+    public function getFavorites($uid)
+    {
+        $this->db->select('books.*');
+        $this->db->from($this->bookTable);
+        $this->db->join($this->favorites, 'favorites.book_id = books.id');
+        $this->db->where('user_id', $uid);
+        $books = $this->db->get();
+        return $books->result();
+    }
+
+    public function updateUser($data)
+    {
+        $user_id = $this->session->userdata('id');
+        $query = $this->db->where('id', $user_id)->update($this->userTable, $data);
+        return $query;
+    }
+
+    public function updatePassword($data)
+    {
+        $user_id = $this->session->userdata('id');
+        $query = $this->db->where('id', $user_id)->update($this->userTable, $data);
+        return $query;
     }
 }

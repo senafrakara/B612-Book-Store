@@ -66,6 +66,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
         print '<div class="cross"><a href="" class="text-success"><i class="fas fa-times"></i></a></div>';
         print '</div>';
     }
+    if ($this->session->flashdata('login_fail')) {
+        print '<div class= "error-msg">';
+        print '<div class = "container">' . $this->session->flashdata('login_fail') . '</div>';
+        print '<div class="cross"><a href="" class="text-success"><i class="fas fa-times"></i></a></div>';
+        print '</div>';
+    }
     ?>
 
 

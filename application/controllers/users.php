@@ -21,10 +21,9 @@ class Users extends CI_Controller
 
     public function  registration()
     {
-        if ($this->session->userdata('logged_in') == TRUE) 
-        {
+        if ($this->session->userdata('logged_in') == TRUE) {
             $this->session->set_flashdata('login_success', 'You are logged in!');
-			redirect('home');
+            redirect('home');
         }
 
         $this->form_validation->set_rules('name', 'Name', 'trim|required|min_length[3]|max_length[20]|xss_clean');
@@ -52,8 +51,7 @@ class Users extends CI_Controller
 
             $view['user_view'] = "users/registration";
             $this->load->view('layouts/user_layout', $view);
-        } else 
-        {
+        } else {
             $this->load->model('user_model');
 
             $options = ['cost' => 12];
@@ -69,13 +67,11 @@ class Users extends CI_Controller
 
             );
 
-            if ($this->user_model->add_user($data))
-            {
+            if ($this->user_model->add_user($data)) {
                 $this->session->set_flashdata('reg_success', 'Your Registration is successfull.');
                 redirect('users/login');
-            } else 
-            {
-    
+            } else {
+
                 $this->session->set_flashdata('reg_fail', 'Oops! Error.  Please try again later!!!');
                 redirect($_SERVER['HTTP_REFERER']);
             }
@@ -84,71 +80,61 @@ class Users extends CI_Controller
 
     public function login()
     {
-        if ($this->session->userdata('logged_in') == TRUE) 
-        {
+        if ($this->session->userdata('logged_in') == TRUE) {
             $this->session->set_flashdata('login_success', 'You are logged in!');
-			redirect('home');
+            redirect('home');
         }
 
         $this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|min_length[3]');
 
-        if($this->form_validation->run() == FALSE)
-		{
-		
+        if ($this->form_validation->run() == FALSE) {
+
             $this->load->model('admin_model');
             $view['categories'] = $this->admin_model->getCategory();
 
-			$view['user_view'] = "users/login";
-			$this->load->view('layouts/user_layout', $view);
-		}
-        else 
-        {
+            $view['user_view'] = "users/login";
+            $this->load->view('layouts/user_layout', $view);
+        } else {
             $this->load->model('user_model');
 
-			$email = $this->input->post('email');
-			$password = $this->input->post('password');
+            $email = $this->input->post('email');
+            $password = $this->input->post('password');
 
-			$user = $this->user_model->login($email, $password);
+            $user = $this->user_model->login($email, $password);
 
-            if($user)
-            {
+            if ($user) {
                 $login_data = array(
-                    'user_data' =>$user,
-                    'id'		=> $user->id,
-					'email'		=> $email,
-					'type'		=> $user->type,
-					'name'		=> $user->name,
+                    'user_data' => $user,
+                    'id'        => $user->id,
+                    'email'        => $email,
+                    'type'        => $user->type,
+                    'name'        => $user->name,
                     'surname'   => $user->surname,
-					'logged_in'	=> true
+                    'logged_in'    => true
                 );
 
                 $this->session->set_userdata($login_data);
 
-                if($user->type == 'A')
-                {
-        
-					redirect('admin/index');
-                } elseif($user->type == 'U')
-                {
-					redirect('home');
+                if ($user->type == 'A') {
+
+                    redirect('admin/index');
+                } elseif ($user->type == 'U') {
+                    redirect('home');
                 }
-            } else 
-            {
+            } else {
                 $this->session->set_flashdata('login_fail', '<i class="fas fa-exclamation-triangle"></i> Invalid login. The email or password is incorrect. ');
 
-				redirect($_SERVER['HTTP_REFERER']); 
+                redirect($_SERVER['HTTP_REFERER']);
             }
-
         }
-
     }
 
     public function logout()
-	{
-		$this->session->sess_destroy();
-		redirect('home');	
-	}
+    {
+        $this->session->sess_destroy();
+        redirect('home');
+    }
 
     public function allBooks()
     {
@@ -181,18 +167,15 @@ class Users extends CI_Controller
 
         $this->load->model('user_model');
         $bookCount = $this->user_model->getBooks($config['per_page'], $this->uri->segment(3));
-        if($bookCount != 0)
-        {
+        if ($bookCount != 0) {
             $view['books'] = $this->user_model->getBooks($config['per_page'], $this->uri->segment(3));
 
             $view['user_view'] = "users/allBooks";
             $this->load->view('layouts/user_layout', $view);
-        } else 
-        {
+        } else {
             $view['user_view'] = "include/404product";
             $this->load->view('layouts/user_layout', $view);
         }
- 
     }
 
     public function bookDetail($id)
@@ -201,26 +184,28 @@ class Users extends CI_Controller
         $view['categories'] = $this->admin_model->getCategory();
 
         $this->form_validation->set_rules('review', 'Review', 'trim|required|min_length[10]|xss_clean');
-    
-    
-        if($this->form_validation->run() == FALSE)
-        {
+
+        $data = array(
+            'book_id' => $id,
+            'user_id' => $this->session->userdata('id')
+        );
+
+        if ($this->form_validation->run() == FALSE) {
             $this->load->model('admin_model');
             $view['bookDetail'] = $this->admin_model->getBookDetail($id);
 
             $this->load->model('user_model');
             $view['comments'] = $this->user_model->getComments($id);
+            $view['isFavorite'] = $this->user_model->isInFavoriteList($data);
 
-            if($this->admin_model->getBookDetail($id))
-            {
+            if ($this->admin_model->getBookDetail($id)) {
                 $view['user_view'] = "users/bookDetail";
-				$this->load->view('layouts/user_layout', $view);
-            } else 
-            {
+                $this->load->view('layouts/user_layout', $view);
+            } else {
                 $view['user_view'] = "include/404";
-				$this->load->view('layouts/user_layout', $view);
+                $this->load->view('layouts/user_layout', $view);
             }
-        } else{
+        } else {
             $data = array(
                 'comment' => $this->input->post('comment'),
                 'userId' => $this->session->userdata('id'),
@@ -228,15 +213,13 @@ class Users extends CI_Controller
             );
 
             $this->load->model('user_model');
-			if($this->user_model->addComment($data))
-            {
+            if ($this->user_model->addComment($data)) {
                 $this->session->set_flashdata('success', 'Comment added successfully!');
-                redirect('users/bookDetail/'.$id.''); //when user makes a comment 
+                redirect('users/bookDetail/' . $id . ''); //when user makes a comment 
             } else {
                 $this->session->set_flashdata('error', 'Comment could not added!');
-                redirect('users/bookDetail/'.$id.'');
+                redirect('users/bookDetail/' . $id . '');
             }
-			
         }
     }
 
@@ -248,20 +231,16 @@ class Users extends CI_Controller
 
         $this->load->model('user_model');
         $bookCount = $this->user_model->getEBooks();
-        if($bookCount != 0)
-        {
+        if ($bookCount != 0) {
             $this->load->model('user_model');
             $view['eBooks'] = $this->user_model->getEBooks();
 
             $view['user_view'] = "users/allEBooks";
             $this->load->view('layouts/user_layout', $view);
-        } else 
-        {
+        } else {
             $view['user_view'] = "include/404product";
             $this->load->view('layouts/user_layout', $view);
         }
-
-     
     }
 
     public function eBookDetail($id)
@@ -269,19 +248,17 @@ class Users extends CI_Controller
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
 
-        
+
         $this->load->model('user_model');
 
         $view['eBookDetail'] = $this->user_model->getEBookDetail($id);
 
-        if($this->user_model->getEBookDetail($id))
-        {
+        if ($this->user_model->getEBookDetail($id)) {
             $view['user_view'] = "users/eBookDetail";
-			$this->load->view('layouts/user_layout', $view);
-        } else
-        {
+            $this->load->view('layouts/user_layout', $view);
+        } else {
             $view['user_view'] = "include/404";
-			$this->load->view('layouts/user_layout', $view);
+            $this->load->view('layouts/user_layout', $view);
         }
     }
 
@@ -300,18 +277,96 @@ class Users extends CI_Controller
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
 
-        $this->form_validation->set_rules('search', "Search",'trim|required|strip_tags[search_book]');
-        if(!$this->form_validation->run())
-        {
+        $this->form_validation->set_rules('search', "Search", 'trim|required|strip_tags[search_book]');
+        if (!$this->form_validation->run()) {
             redirect('home');
-        } else 
-        {
+        } else {
             $search = $this->input->post('search');
             $this->load->model('user_model');
-            $view['books'] = $this->user_model->search($search);
-            $view['user_view'] = 'users/searchView';
-            $this->load->view('layouts/user_layout', $view);
+
+            $result = $this->user_model->search($search);
+
+            if($result == 0)
+            {
+                
+                $view['user_view'] = 'include/404nosearch';
+                $this->load->view('layouts/user_layout', $view);
+            } else 
+            {
+                $this->load->model('user_model');
+                $view['books'] = $this->user_model->search($search);
+                $view['user_view'] = 'users/searchView';
+                $this->load->view('layouts/user_layout', $view);
+            }
+            
         }
     }
 
+    public function aboutUs()
+    {
+        $this->load->model('admin_model');
+        $view['categories'] = $this->admin_model->getCategory();
+        $view['user_view'] = 'include/aboutUs';
+        $this->load->view('layouts/user_layout', $view);
+    }
+
+    public function contactUs()
+    {
+        $this->load->model('admin_model');
+        $view['categories'] = $this->admin_model->getCategory();
+
+
+        $this->load->library('email');
+        $this->load->library('form_validation');
+
+
+        $this->form_validation->set_rules('name', 'Name', 'trim|required|min_length[4]|max_length[16]');
+        $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|min_length[6]|max_length[60]');
+        $this->form_validation->set_rules('message', 'Message', 'trim|required|min_length[12]|max_length[200]');
+
+  
+        if ($this->form_validation->run() === FALSE) {
+            $view['user_view'] = 'users/contactUs';
+            $this->load->view('layouts/user_layout', $view);
+        } else {
+
+           
+            $name = $this->input->post('name');
+            $from_email = $this->input->post('email');
+            $subject = $this->input->post('subject');
+            $message = $this->input->post('message');
+
+          
+            $to_email = 'senafrakara@gmail.com'; 
+
+       
+            $config['protocol'] = 'smtp';
+            $config['smtp_host'] = 'ssl://smtp.gmail.com';
+            $config['smtp_port'] = '465';
+            $config['smtp_user'] = 'senafrakara@gmail.com'; 
+            $config['smtp_pass'] = '#'; 
+            $config['mailtype'] = 'html'; 
+            $config['charset'] = 'iso-8859-1';
+            $config['wordwrap'] = TRUE; 
+            $config['newline'] = "\r\n"; 
+
+            $this->email->initialize($config);
+
+            //Send mail with data
+            $this->email->from($from_email, $name);
+            $this->email->to($to_email);
+            $this->email->subject($subject);
+            $this->email->message($message);
+
+            if ($this->email->send()) {
+                $this->session->set_flashdata('msg', '<div class="alert alert-success">Mail sent!</div>');
+
+                redirect('users/contactUs');
+            } else {
+                $this->session->set_flashdata('msg', '<div class="alert alert-danger">Problem in sending</div>');
+                $view['user_view'] = 'users/contactUs';
+                $this->load->view('layouts/user_layout', $view);
+            }
+        }
+    }
 }

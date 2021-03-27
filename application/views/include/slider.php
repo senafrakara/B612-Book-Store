@@ -5,7 +5,7 @@
                    <div class="col-md-6">
                        <div class="slide-text">
                            <h2>We provide your favourite Books</h2>
-                           <div><a href="<?= base_url()?>users/allBooks" class="btn-buy btn btn-sm">Buy now <i class="fas fa-arrow-circle-right"></i></a></div>
+                           <div><a href="<?= base_url('users/allBooks')?>" class="btn-buy btn btn-sm">Buy now <i class="fas fa-arrow-circle-right"></i></a></div>
                        </div>
                    </div>
                </div>
@@ -19,7 +19,7 @@
                        <div class="slide-text">
                            <h2>Buy your favourite books </h2>
                     
-                           <div><a href="<?= base_url()?>users/allBooks" class="btn-buy">Buy now <i class="fas fa-arrow-circle-right"></i></a></div>
+                           <div><a href="<?= base_url('users/allBooks')?>" class="btn-buy">Buy now <i class="fas fa-arrow-circle-right"></i></a></div>
                        </div>
                    </div>
                </div>
@@ -40,4 +40,5 @@
                 
             </div>
         </div>
+
     </div>

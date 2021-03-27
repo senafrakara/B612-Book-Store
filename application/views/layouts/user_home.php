@@ -75,16 +75,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12" style="min-height: 500px; margin-top: 3%;">
                 <div class="row">
-                    <div class="col-lg-2">
+                    <div class="col-lg-3">
 
                         <div class="card card-body">
                             <hr>
                             <h3 style="text-align: center">Your Bag</h3>
                             <hr>
                             <div class="user-panel">
-                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="">My Favorites</a>
+                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/allFavorites')?>">My Favorites</a>
                                 <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/user_orders')?>">My Orders</a>
-                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="">Edit Profile</a>
+                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/editAccount')?>">Edit Account</a>
                             </div>
 
 
@@ -92,7 +92,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
                     </div>
 
-                    <div class="col-lg-10">
+                    <div class="col-lg-9">
                         <?php $this->load->view($user_view); ?>
                     </div>
                 </div>

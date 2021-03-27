@@ -5,6 +5,9 @@ if ($this->session->flashdata('login_success')) {
 if ($this->session->flashdata('success')) {
     print '<div class= "success-msg">' . $this->session->flashdata('success') . '</div>';
 }
+if ($this->session->flashdata('error')) {
+    print '<div class= "error-msg">' . $this->session->flashdata('error') . '</div>';
+}
 ?>
 
 

@@ -28,9 +28,9 @@
                             <li><a href="<?= base_url('users/allEBooks') ?>">E-books <i class="fas fa-file"></i></a></li>
 
 
-                            <li><a href="#" data-toggle="modal" data-target="#exampleModal">Contact Us</a></li>
+                            <li><a href="<?= base_url('users/contactUs')?>" >Contact Us</a></li>
 
-                            <li><a href="#" data-toggle="modal" data-target="#aboutModal">About Us</a></li>
+                            <li><a href="<?= base_url('users/aboutUs')?>" >About Us</a></li>
                           
                             <?php if ($this->session->userdata('logged_in') == FALSE) : ?>
                                 <li> <a href="<?= base_url('users/login') ?>" class="btn-login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
@@ -51,9 +51,9 @@
                                     </a>
                                     <div class="dropdown-menu custom-dropdown" style="z-index: 2222222;" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" href="<?= base_url('user_account')?>">My Profile</a>
-                                        <a class="dropdown-item" href="">My Favorite Books List</a>
+                                        <a class="dropdown-item" href="<?= base_url('user_account/allFavorites')?>">My Favorite Books List</a>
                                         <a class="dropdown-item" href="<?= base_url('user_account/user_orders')?>">My Orders List</a>
-                                        <a class="dropdown-item" href="">Edit Profile</a>
+                                        <a class="dropdown-item" href="<?= base_url('user_account/editAccount')?>">Edit Account</a>
                                         <a href="<?= base_url('users/logout') ?>" id="logout" class="btn btn-warning dropdown-item">Logout</a>
                                     </div>
                                 </li>
