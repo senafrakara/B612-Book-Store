@@ -7,7 +7,7 @@
 
 
     <?php foreach ($books as $book) : ?>
-        <div class="col-lg-2 col-md-3 col-sm-4">
+        <div class="col-lg-3 col-md-4 col-sm-5">
             <div id="single-book">
                 <div id="book-image">
                     <?php print '<img src = "' . strip_tags($book->book_image) . '" alt = "">'; ?>
