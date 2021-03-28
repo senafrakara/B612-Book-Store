@@ -17,6 +17,8 @@ class user_model extends CI_Model
     public $orderItems = 'order_items';
     public $favorites = 'favorites';
 
+
+
     public function add_user($data)
     {
         $insert = $this->db->insert($this->userTable, $data);
@@ -235,15 +237,11 @@ class user_model extends CI_Model
         $this->db->where("status", 1);
         $this->db->or_where("author RLIKE '$s'");
         $result = $this->db->get();
-        if($result->num_rows() == 0)
-        {
+        if ($result->num_rows() == 0) {
             return 0;
-            
-        }
-        else {
+        } else {
             return $result->result();
         }
-        
     }
 
     public function addFavoriteList($data)
@@ -292,4 +290,43 @@ class user_model extends CI_Model
         $query = $this->db->where('id', $user_id)->update($this->userTable, $data);
         return $query;
     }
+
+    public function userCheck($email)
+    {
+
+        $this->db->select('users.id, users.name');
+        $this->db->from($this->userTable);
+        $this->db->where('email', $email);
+        $user = $this->db->get();
+        return $user->row();
+    }
+
+    public function addResetToken($uid, $token, $date)
+    {
+        $data = array(
+            'reset_password_token' => $token,
+            'token_created_at' => $date
+        );
+
+        $query = $this->db->where('id', $uid)->update($this->userTable, $data);
+        return $query;
+    }
+
+    public function verify_user($email, $token)
+    {
+        $this->db->select('users.token_created_at, users.name');
+        $this->db->from($this->userTable);
+        $this->db->where('email', $email);
+        $this->db->where('reset_password_token', $token);
+        $user = $this->db->get();
+        return $user->row();
+    }
+
+    public function changePassword($email, $data)
+    {
+       
+        $query = $this->db->where('email', $email)->update($this->userTable, $data);
+        return $query;
+    }
+
 }

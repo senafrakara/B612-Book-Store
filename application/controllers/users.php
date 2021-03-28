@@ -286,19 +286,16 @@ class Users extends CI_Controller
 
             $result = $this->user_model->search($search);
 
-            if($result == 0)
-            {
-                
+            if ($result == 0) {
+
                 $view['user_view'] = 'include/404nosearch';
                 $this->load->view('layouts/user_layout', $view);
-            } else 
-            {
+            } else {
                 $this->load->model('user_model');
                 $view['books'] = $this->user_model->search($search);
                 $view['user_view'] = 'users/searchView';
                 $this->load->view('layouts/user_layout', $view);
             }
-            
         }
     }
 
@@ -320,53 +317,239 @@ class Users extends CI_Controller
         $this->load->library('form_validation');
 
 
-        $this->form_validation->set_rules('name', 'Name', 'trim|required|min_length[4]|max_length[16]');
+        $this->form_validation->set_rules('name', 'Name', 'trim|required|min_length[3]|max_length[20]');
         $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|min_length[6]|max_length[60]');
         $this->form_validation->set_rules('message', 'Message', 'trim|required|min_length[12]|max_length[200]');
 
-  
+
         if ($this->form_validation->run() === FALSE) {
             $view['user_view'] = 'users/contactUs';
             $this->load->view('layouts/user_layout', $view);
         } else {
 
-           
+
             $name = $this->input->post('name');
             $from_email = $this->input->post('email');
             $subject = $this->input->post('subject');
             $message = $this->input->post('message');
 
-          
-            $to_email = 'senafrakara@gmail.com'; 
+            $isSent = $this->sendMailContactUs($from_email, $subject, $message);
 
-       
-            $config['protocol'] = 'smtp';
-            $config['smtp_host'] = 'ssl://smtp.gmail.com';
-            $config['smtp_port'] = '465';
-            $config['smtp_user'] = 'senafrakara@gmail.com'; 
-            $config['smtp_pass'] = '#'; 
-            $config['mailtype'] = 'html'; 
-            $config['charset'] = 'iso-8859-1';
-            $config['wordwrap'] = TRUE; 
-            $config['newline'] = "\r\n"; 
-
-            $this->email->initialize($config);
-
-            //Send mail with data
-            $this->email->from($from_email, $name);
-            $this->email->to($to_email);
-            $this->email->subject($subject);
-            $this->email->message($message);
-
-            if ($this->email->send()) {
-                $this->session->set_flashdata('msg', '<div class="alert alert-success">Mail sent!</div>');
+            if ($isSent) {
+                $this->session->set_flashdata('msg', 'We received your email, We will reply to your e-mail soon!');
 
                 redirect('users/contactUs');
             } else {
-                $this->session->set_flashdata('msg', '<div class="alert alert-danger">Problem in sending</div>');
+                $this->session->set_flashdata('msg_fail', 'Mail could not sent, please try again!');
                 $view['user_view'] = 'users/contactUs';
+
                 $this->load->view('layouts/user_layout', $view);
             }
         }
     }
+
+    private function sendMailContactUs($from_email, $subject, $message)
+    {
+        $this->load->library('email');
+        $config = array(
+            "protocol"  => "smtp",
+            "smtp_host" => "smtp.googlemail.com",
+            "smtp_crypto" => "tls",
+            "smtp_port" => "587",
+            "smtp_user" => "senafrakara@gmail.com",
+            "smtp_pass" => "*Passw0rd#2009",
+            "charset" => "utf-8",
+            "mail_type" => "html",
+            "wordwrap" => true,
+            "newline" => "\r\n",
+        );
+
+        $this->email->initialize($config);
+        $this->email->to($from_email);
+        $this->email->from('senafrakara@gmail.com');
+        $this->email->subject($subject);
+        $this->email->message($message);
+
+        $this->email->set_header('Content-Type', 'text/html');
+        return $this->email->send();
+    }
+
+    public function ForgotPassword()
+    {
+        $this->load->model('admin_model');
+        $view['categories'] = $this->admin_model->getCategory();
+
+        $this->form_validation->set_rules(
+            'email',
+            'Email',
+            'trim|required|valid_email|xss_clean',
+            array(
+                'required' => 'Email field can not be empty'
+            )
+        );
+
+        if (!$this->form_validation->run()) {
+
+            $view['user_view'] = "users/password_reset_form";
+            $this->load->view('layouts/user_layout', $view);
+        } else {
+
+            $email = $this->input->post('email');
+
+            $this->load->model('user_model');
+            $user = $this->user_model->userCheck($email);
+
+            if ($user) {
+
+                $hash = md5($this->config->item('salt'));
+                $date = date('Y-m-d H:i:s');
+
+                $this->load->model('user_model');
+
+                if ($this->user_model->addResetToken($user->id, $hash, $date)) {
+
+                    $this->sendMaill($email, $user->name, $hash);
+                    $view['user_view'] = "users/password_reset_done";
+                    $this->load->view('layouts/user_layout', $view);
+                } else {
+                }
+            } else {
+                $this->session->set_flashdata('no_access', ' Email not found!');
+                redirect(base_url('users/login'));
+            }
+        }
+    }
+
+
+
+    public function checkResetPassword()
+    {
+        $this->load->model('admin_model');
+        $view['categories'] = $this->admin_model->getCategory();
+
+        $this->form_validation->set_rules('newpass', 'New Password', 'trim|required|min_length[3]|xss_clean');
+        $this->form_validation->set_rules(
+            'cnewpass',
+            'Confirm Password',
+            'trim|required|min_length[3]|matches[newpass]'
+        );
+        if (!$this->form_validation->run()) {
+
+            $view['user_view'] = "users/password_reset_confirm";
+            $this->load->view('layouts/user_layout', $view);
+        } else {
+
+            $email = $_GET['email'];
+            $token = $_GET['token'];
+            $this->load->model('user_model');
+
+            $token_created_at = $this->user_model->verify_user($email, $token);
+
+            if ($token_created_at) {
+
+                if ($this->__validToken($token_created_at->token_created_at)) {
+                    $options = ['cost' => 12];
+                    $encripted_pass = password_hash($this->input->post('newpass'), PASSWORD_BCRYPT, $options);
+
+                    $data = array(
+                        'password' => $encripted_pass,
+                    );
+
+                    $this->load->model('user_model');
+                    $changePwd = $this->user_model->changePassword($email, $data);
+                    if ($changePwd) {
+                        $view['user_view'] = "users/password_reset_complete";
+                        $this->load->view('layouts/user_layout', $view);
+                    } else {
+                        $this->session->set_flashdata('no_access', ' The password could not reset!');
+                        redirect(base_url('users/login'));
+                    }
+                } else {
+                    $this->session->set_flashdata('no_access', ' The password reset request has either expired or is invalid.');
+                    redirect(base_url('users/login'));
+                }
+            }
+        }
+    }
+
+    private function __validToken($token_created_at)
+    {
+        $expired = strtotime($token_created_at) + 86400;
+        $time = strtotime("now");
+        if ($time < $expired) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    public function sendMaill($email, $name, $hash)
+    {
+        $this->load->library('email');
+        $config = array(
+            "protocol"  => "smtp",
+            "smtp_host" => "smtp.googlemail.com",
+            "smtp_crypto" => "tls",
+            "smtp_port" => "587",
+            "smtp_user" => "senafrakara@gmail.com",
+            "smtp_pass" => "*Passw0rd#2009",
+            "charset" => "utf-8",
+            "mail_type" => "html",
+            "wordwrap" => true,
+            "newline" => "\r\n",
+        );
+
+        $this->email->initialize($config);
+        $this->email->to($email);
+        $this->email->from('senafrakara@gmail.com');
+        $this->email->subject('Reset password for B612 Book Store;');
+        $this->email->message("Dear " . $name . ", you are receiving this email because you requested a password reset for your user account at B612 Book Store." . "\n" .
+            "Please go to the following page and choose a new password: <a href=" . base_url('users/checkResetPassword/') . "?email=" . $email . "&token=" . $hash . ">Click here</a>  .");
+
+
+        $this->email->set_header('Content-Type', 'text/html');
+
+        $this->email->send();
+    }
+
+    // private function __generateToken($uid)
+    // {
+    //     if (empty($uid)) {
+    //         return null;
+    //     }
+
+    //     // Generate a random string 100 chars in length.
+    //     $token = "";
+    //     for ($i = 0; $i < 100; $i++) {
+    //         $d = rand(1, 100000) % 2;
+    //         $d ? $token .= chr(rand(33, 79)) : $token .= chr(rand(80, 126));
+    //     }
+
+    //     (rand(1, 100000) % 2) ? $token = strrev($token) : $token = $token;
+
+    //     // Generate hash of random string
+    //     $hash = hash('sha256', $token, true);;
+    //     for ($i = 0; $i < 20; $i++) {
+    //         $hash = hash('sha256', $hash,  true);
+    //     }
+
+    //     $this->load->model('user_model');
+
+    //     $date = date('Y-m-d H:i:s');
+
+    //     $tokenData = array(
+    //         'token' => $hash,
+    //     );
+
+    //     $this->session->set_userdata($tokenData);
+    //     if ($this->user_model->addResetToken($uid, $date)) {
+    //         $data = array(
+    //             'success' => TRUE,
+    //             'hash' => $hash
+    //         );
+    //         return $data;
+    //     } else {
+
+    //         return FALSE;
+    //     }
+    // }
 }

@@ -289,7 +289,6 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
 }
 
-/*========= Slider area CSS =========*/
 
 .slider-bg-1 {
     background-image: url(../../style/img/slider/slider.png);
@@ -594,6 +593,8 @@ form#user-search {
 
 #acc {
     margin-top: 12px;
+    color: #2b1f31;
+    font-size: 15px;
 }
 
 small a {
@@ -919,7 +920,7 @@ small a {
 #addto-cart a {
     color: #fff;
     font-size: 14px;
-    background: #F8694A;
+    background: #9c3ad1;
     display: block;
     padding: 6px 0;
     text-transform: uppercase;
@@ -996,7 +997,7 @@ small a {
 
 #book-details a {
     display: block;
-    background: #00307f;
+    background: #2b1f31;
     position: absolute;
     width: 100%;
     left: 0;
@@ -1009,7 +1010,7 @@ small a {
 }
 
 #book-details a:hover {
-    background: #004ece;
+    background: #9c3ad1;
 }
 
 #single-book:hover #book-details a {
@@ -1398,4 +1399,41 @@ a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover
     border-radius: 6px;
     border: solid 1px #e2e2e2;
     background-color: #ffffff;
+}
+
+.forgot-pwd{
+    font-size: 15px;
+    color: #2b1f31;
+    font-weight: 700;
+}
+.forgot-pwd:hover{
+    color: #9c3ad1;
+}
+
+
+.form-group label {
+    font-size: 18px;
+    color: #2b1f31;
+}
+.login-btn{
+    width: 100%;
+}
+
+.forgotpwd-form{
+    border: 1px solid #dddd;
+    padding: 40px 28px;
+    margin: 40px 0;
+    min-height: 250px;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.forgot-pwd-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.form-group .btn {
+    width: 100%;
 }
