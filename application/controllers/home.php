@@ -30,7 +30,22 @@ class Home extends CI_Controller
 		$this->load->model('user_model');
 		$view['novelBooks'] = $this->user_model->novelBooks();
 
-
+		if($this->session->userdata('id'))
+		{
+			$view['countCartItems'] = $this->countCartItems();
+		}
 		$this->load->view('layouts/home_layout', $view);
 	}
+
+	private function countCartItems()
+    {
+        if($this->session->userdata('id'))
+        {
+            $this->load->model('user_model');
+            $countCartItems = $this->user_model->getCartItemCount();
+            return $countCartItems;
+
+        }
+    }
+
 }

@@ -25,6 +25,7 @@ class User_account extends CI_Controller
 
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
         $uid = $this->session->userdata('id');
         $this->load->model('user_model');
@@ -43,6 +44,8 @@ class User_account extends CI_Controller
 
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
+
         $this->load->model('user_model');
         if ($this->user_model->getOrders()) {
             $view['orders'] = $this->user_model->getOrders();
@@ -63,6 +66,8 @@ class User_account extends CI_Controller
 
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
+
         $this->load->model('user_model');
         $order =  $this->user_model->getOrderDetail($id);
         $orderItems = $this->user_model->getOrderItems($id);
@@ -119,6 +124,7 @@ class User_account extends CI_Controller
 
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
         $user = $this->session->userdata('id');
 
@@ -146,6 +152,7 @@ class User_account extends CI_Controller
 
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
         $user = $this->session->userdata('id');
         $this->load->model('user_model');
@@ -157,7 +164,7 @@ class User_account extends CI_Controller
         $this->form_validation->set_rules(
             'email',
             'Email',
-            'trim|required|valid_email|is_unique[users.email]|xss_clean',
+            'trim|valid_email|xss_clean',
             array(
                 'required' => 'Email field can not be empty',
                 'is_unique' => 'This email is already registered'
@@ -174,6 +181,14 @@ class User_account extends CI_Controller
             }
         } else {
             $this->load->model('user_model');
+            $userr = $this->user_model->getUser($user);
+            if ($userr->email != $this->input->post('email')) {
+                $user2 = $this->user_model->getUserWithEmail($this->input->post('email'));
+                if ($user2) {
+                    $this->session->set_flashdata('error', 'This email is already registered!');
+                    redirect('user_account');
+                }
+            }
 
             $data = array(
                 'name'    => $this->input->post('name'),
@@ -181,16 +196,15 @@ class User_account extends CI_Controller
                 'contact'    => $this->input->post('contact'),
                 'email'    => $this->input->post('email')
             );
-            if($this->user_model->updateUser($data))
-            {
-                $this->session->set_flashdata('success', 'Your account updated successfully!');
-				redirect('user_account');
-            } else 
-            {
-                $this->session->set_flashdata('error', 'Upps! Something went wrong, please try again!');
-				redirect('user_account');
-            }
 
+
+            if ($this->user_model->updateUser($data)) {
+                $this->session->set_flashdata('success', 'Your account updated successfully!');
+                redirect('user_account');
+            } else {
+                $this->session->set_flashdata('error', 'Upps! Something went wrong, please try again!');
+                redirect('user_account');
+            }
         }
     }
 
@@ -207,10 +221,11 @@ class User_account extends CI_Controller
             'Confirm Password',
             'trim|required|min_length[3]|matches[password]'
         );
-
+        $view['countCartItems'] = $this->countCartItems();
         if ($this->form_validation->run() == FALSE) {
             $this->load->model('admin_model');
             $view['categories'] = $this->admin_model->getCategory();
+            $view['countCartItems'] = $this->countCartItems();
 
             $view['user_view'] = "users/editAccount";
             $this->load->view('layouts/user_layout', $view);
@@ -234,6 +249,14 @@ class User_account extends CI_Controller
                 redirect($_SERVER['HTTP_REFERER']);
             }
         }
+    }
 
+    private function countCartItems()
+    {
+        if ($this->session->userdata('id')) {
+            $this->load->model('user_model');
+            $countCartItems = $this->user_model->getCartItemCount();
+            return $countCartItems;
+        }
     }
 }

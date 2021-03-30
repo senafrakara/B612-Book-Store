@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-4">
-                    <div class="col-admin bg-danger clickable-div" data-href="">
+                    <div class="col-admin bg-danger clickable-div" data-href="<?= base_url('admin/allOrders') ?>">
                         <div>
                             <i class="fas fa-shopping-cart"></i>
                             <h6>Total orders</h6>

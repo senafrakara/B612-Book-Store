@@ -16,6 +16,8 @@ class user_model extends CI_Model
     public $orders = 'orders';
     public $orderItems = 'order_items';
     public $favorites = 'favorites';
+    public $cartItem = "cart_item";
+
 
 
 
@@ -199,6 +201,15 @@ class user_model extends CI_Model
         $user = $this->db->get_where($this->userTable, array('id' => $uid));
         return $user->row();
     }
+    public function getUserWithEmail($email)
+    {
+        $user = $this->db->get_where($this->userTable, array('email' => $email));
+        if($user->num_rows() == 1)
+        {
+            return TRUE;
+        }
+        return FALSE;
+    }
 
     public function getOrders()
     {
@@ -324,9 +335,116 @@ class user_model extends CI_Model
 
     public function changePassword($email, $data)
     {
-       
+
         $query = $this->db->where('email', $email)->update($this->userTable, $data);
         return $query;
     }
 
+    public function addCartItem($data)
+    {
+
+        $insert = $this->db->insert($this->cartItem, $data);
+        return $insert;
+    }
+
+    public function getAllCartItems()
+    {
+        $user_id = $this->session->userdata('id');
+        $this->db->select('books.*, cart_item.qty, cart_item.book_id, cart_item.id as cartItemID');
+        $this->db->from($this->bookTable);
+        $this->db->join($this->cartItem, 'cart_item.book_id = books.id');
+        $this->db->where('cart_item.user_id', $user_id);
+        $books = $this->db->get();
+        return $books->result();
+    }
+
+    public function getCartItem($book_id, $user_id)
+    {
+        $cartItem = $this->db->get_where($this->cartItem, array('user_id' => $user_id, 'book_id' => $book_id));
+        return $cartItem->row();
+    }
+
+    public function updateCartItemQTY($cart_item_id, $currentQTY, $contentQTY)
+    {
+        $data = array(
+            'qty' => $currentQTY + $contentQTY,
+        );
+
+        $this->db->where('id', $cart_item_id);
+        $this->db->update($this->cartItem, $data);
+    }
+
+
+    public function deleteCartItem($id)
+    {
+        $query = $this->db->where('id', $id)->delete($this->cartItem);
+        return $query;
+    }
+
+    public function deleteAllCartItems($uid)
+    {
+        $query = $this->db->where('user_id', $uid)->delete($this->cartItem);
+        return $query;
+    }
+
+    public function addOrder($data)
+    {
+        $query = $this->db->insert($this->orders, $data);
+        $insert_id = $this->db->insert_id();
+        $result = array(
+            'complete' =>$query,
+            'order_id' => $insert_id
+        );
+        return $result;
+    }
+
+    public function addOrderItem($data)
+    {
+       $query = $this->db->insert($this->orderItems, $data);
+       return $query;
+    }
+
+    public function getCartItemCount()
+    {
+        $this->db->select('count(*) as count');
+        $this->db->from($this->cartItem);
+        $this->db->where('user_id', $this->session->userdata('id'));
+        $count = $this->db->get();
+        // $cartItems = $this->db->get_where($this->cartItem, array('user_id'=> $this->session->userdata('id')));
+        // if($cartItems->num_rows() > 0 ){
+        //     return $this->db->count_all_results();
+        // }
+        return $count->row();
+    }
+
+   
+    // public function updateCartQuantity($quantity, $cart_id)
+    // {
+        
+    //     $query = "UPDATE cart_item SET  qty = ? WHERE id= ?";
+        
+    //     $params = array(
+    //         array(
+    //             "param_type" => "i",
+    //             "param_value" => $quantity
+    //         ),
+    //         array(
+    //             "param_type" => "i",
+    //             "param_value" => $cart_id
+    //         )
+    //     );
+        
+    //     $this->updateDB($query, $params);
+    // }
+
+    public function updateCartQuantity($quantity, $cart_id)
+    {
+        $data = array(
+            'qty' => $quantity
+        );
+
+        $this->db->where('id', $cart_id);
+        $this->db->update($this->cartItem, $data);
+    }
+    
 }

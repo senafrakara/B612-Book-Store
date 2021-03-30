@@ -289,7 +289,6 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
 }
 
-
 .slider-bg-1 {
     background-image: url(../../style/img/slider/slider.png);
 }
@@ -568,7 +567,6 @@ form {
     margin-top: 45px;
 }
 
-
 form#user-search {
     margin-top: 2px;
 }
@@ -843,22 +841,17 @@ small a {
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #ececec;
-
 }
 
 .row-image {
     width: 100px;
 }
 
-
 .quantity {
     display: inline-block;
     font-weight: 700;
     padding-right: 10px;
-
-
 }
-
 
 .box-element {
     box-shadow: hsl(0, 0%, 80%) 0 0 16px;
@@ -867,18 +860,18 @@ small a {
     padding: 10px;
 }
 
-
-.leave-review{
+.leave-review {
     font-weight: 700;
     line-height: 1.2;
     font-size: 1.6rem;
     color: #2b1f31;
 }
 
-.btn-add-to-cart:hover{
+.btn-add-to-cart:hover {
     background-color: #9c3ad1 !important;
     color: #fff !important;
 }
+
 #book-detail h5 {
     text-transform: capitalize;
     color: #555;
@@ -944,7 +937,6 @@ small a {
     display: flex;
     flex-direction: row;
     justify-content: center;
-
 }
 
 #book-image:after {
@@ -1188,21 +1180,24 @@ ul.custom-pagination li.active a:hover {
     text-align: center;
 }
 
-.account-dropdown{
+.account-dropdown {
     width: 25%;
-
 }
-.account-dropdown .dropdown-menu{
+
+.account-dropdown .dropdown-menu {
     background-color: transparent !important;
 }
-.account-dropdown .dropdown-menu a{
+
+.account-dropdown .dropdown-menu a {
     background-color: #2b1f31 !important;
     color: #ffffff !important;
 }
-.account-dropdown .dropdown-menu a:hover{
-   background-color: #9c3ad1 !important;
-   color: #fff  !important;
+
+.account-dropdown .dropdown-menu a:hover {
+    background-color: #9c3ad1 !important;
+    color: #fff !important;
 }
+
 .dropdown-menu.custom-dropdown.show {
     transform: translate3d(0px, 38px, 0px) !important;
     top: -1px !important;
@@ -1213,11 +1208,11 @@ a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button {
     background-color: #7cacfd !important;
     margin: 5px;
 }
-a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover{
 
+a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover {
     background-color: #a6c4f6 !important;
-    
 }
+
 .fb {
     background: #3B5998;
     border: 1px solid #3B5998;
@@ -1321,8 +1316,6 @@ a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover
     font-size: 16px;
 }
 
-
-
 .favorite-card .favorites-box .favorite-list-img {
     max-height: 200px;
     width: auto;
@@ -1372,7 +1365,6 @@ a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-
 }
 
 .product-author-publisher .publisher {
@@ -1385,41 +1377,43 @@ a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover
     padding-top: 0.7rem;
 }
 
-#favourite-section
-{
+#favourite-section {
     display: flex;
     justify-content: center;
     flex-direction: row;
     padding: 9px;
 }
- .divider {
+
+.divider {
     border-left: solid 1px #e2e2e2;
 }
-.account-info{
+
+.account-info {
     border-radius: 6px;
     border: solid 1px #e2e2e2;
     background-color: #ffffff;
 }
 
-.forgot-pwd{
+.forgot-pwd {
     font-size: 15px;
     color: #2b1f31;
     font-weight: 700;
 }
-.forgot-pwd:hover{
+
+.forgot-pwd:hover {
     color: #9c3ad1;
 }
-
 
 .form-group label {
     font-size: 18px;
     color: #2b1f31;
 }
-.login-btn{
+
+.login-btn {
     width: 100%;
 }
 
-.forgotpwd-form{
+.forgotpwd-form {
     border: 1px solid #dddd;
     padding: 40px 28px;
     margin: 40px 0;
@@ -1429,11 +1423,41 @@ a.btn.btn-primary.dropdown-item.waves-effect.waves-light.user-panel-button:hover
     overflow: hidden;
 }
 
-.forgot-pwd-area{
+.forgot-pwd-area {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 .form-group .btn {
     width: 100%;
+}
+
+.chg-quantity {
+    width: 12px;
+    cursor: pointer;
+    display: block;
+    margin-top: 5px;
+    transition: .1s;
+}
+
+.chg-quantity:hover {
+    opacity: .6;
+}
+
+.user-cart-detail {
+    margin-top: 2%;
+    border-top: 2px solid black;
+    margin-bottom: 30px;
+    padding-top: 27px;
+}
+
+.input-quantity {
+    border: 0px;
+    width: 22px;
+    display: inline-block;
+    margin: 0;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 18px;
 }

@@ -21,6 +21,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['admin_view'] = "admin/index_admin";
+        $view['countCartItems'] = $this->countCartItems();
         $this->load->view('layouts/admin_layout', $view);
     }
 
@@ -52,6 +53,7 @@ class Admin extends CI_Controller
 
         $this->load->model('admin_model');
         $view['books'] = $this->admin_model->getBooks($config['per_page'], $this->uri->segment(3));
+        $view['countCartItems'] = $this->countCartItems();
 
         $view['admin_view'] = "admin/allBooks";
         $this->load->view('layouts/admin_layout', $view);
@@ -61,6 +63,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['category'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
         $config = [
             'upload_path' => './uploads/image/',
@@ -86,7 +89,7 @@ class Admin extends CI_Controller
             $this->load->view('layouts/admin_layout', $view);
         } else {
 
-            
+
             $dataImg = $this->uploadFile($config, 'userfile');
             $image_path = base_url("uploads/image/" . $dataImg['raw_name'] . $dataImg['file_ext']);
 
@@ -118,6 +121,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['book_detail'] = $this->admin_model->getBookDetail($id);
+        $view['countCartItems'] = $this->countCartItems();
 
         if ($this->admin_model->getBookDetail($id)) {
             $view['admin_view'] = 'admin/bookDetail';
@@ -132,6 +136,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['category'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
         $view['book_detail'] = $this->admin_model->getBookDetail($id);
 
@@ -151,7 +156,7 @@ class Admin extends CI_Controller
         $this->form_validation->set_rules('price', 'Price', 'trim|required|strip_tags[price]');
         $this->form_validation->set_rules('quantity', 'Quantity', 'trim|required|numeric|strip_tags[quantity]');
         $this->form_validation->set_rules('categoryId', 'Category', 'trim|required');
-     
+
 
         if (!$this->form_validation->run()) {
 
@@ -168,7 +173,7 @@ class Admin extends CI_Controller
 
             $dataImg = $this->uploadFile($config, 'userfile');
             $image_path = base_url("uploads/image/" . $dataImg['raw_name'] . $dataImg['file_ext']);
-           
+
             if (!empty($_FILES['userfile']['name'])) {
 
                 $data = array(
@@ -213,6 +218,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $this->admin_model->deleteBook($id);
+        $view['countCartItems'] = $this->countCartItems();
 
         $this->session->set_flashdata('success', '<i class= "fas fa-trash text-danger"></i> Book deleted successfully');
         redirect('admin/allBooks');
@@ -223,6 +229,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
         $view['admin_view'] = "admin/allCategories";
         $this->load->view('layouts/admin_layout', $view);
@@ -232,6 +239,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['catDetail'] = $this->admin_model->getCategoryDetail($id);
+        $view['countCartItems'] = $this->countCartItems();
 
         if ($this->admin_model->getCategoryDetail($id)) {
             $view['admin_view'] = "admin/categoryDetail";
@@ -246,6 +254,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['catDetail'] = $this->admin_model->getCategoryDetail($id);
+        $view['countCartItems'] = $this->countCartItems();
 
         $this->form_validation->set_rules('category', 'Category name', 'trim|required|alpha_numeric_spaces');
         $this->form_validation->set_rules('tag', 'Category tag', 'trim|required|alpha|strip_tags[tag]');
@@ -286,6 +295,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $this->admin_model->deleteCategory($id);
+        $view['countCartItems'] = $this->countCartItems();
 
         $this->session->set_flashdata('success', '<i class= "fas fa-trash text-danger"></i> Category deleted successfully');
         redirect('admin/getCategories');
@@ -293,6 +303,7 @@ class Admin extends CI_Controller
 
     public function addCategory()
     {
+        $view['countCartItems'] = $this->countCartItems();
         $this->form_validation->set_rules('category', 'Category name', 'trim|required|alpha_numeric_spaces');
         $this->form_validation->set_rules('tag', 'Category tag', 'trim|required|alpha|strip_tags[tag]');
         $this->form_validation->set_rules('description', 'Description', 'trim|strip_tags[description]');
@@ -324,7 +335,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['users'] = $this->admin_model->getUsers();
-
+        $view['countCartItems'] = $this->countCartItems();
 
         $view['admin_view'] = "admin/allUsers";
         $this->load->view('layouts/admin_layout', $view);
@@ -333,6 +344,8 @@ class Admin extends CI_Controller
     public function deleteUser($id)
     {
         $this->load->model('admin_model');
+        $view['countCartItems'] = $this->countCartItems();
+        
         if ($this->admin_model->deleteUser($id)) {
             $this->session->set_flashdata('success', '<i class= "fas fa-trash text-danger"></i> User deleted successfully!');
             redirect('admin/allUsers');
@@ -345,6 +358,7 @@ class Admin extends CI_Controller
     public function addUser()
     {
 
+        $view['countCartItems'] = $this->countCartItems();
         $this->form_validation->set_rules('name', 'Name', 'trim|required|min_length[3]|max_length[20]|xss_clean');
         $this->form_validation->set_rules('surname', ' Surname ', 'trim|required|min_length[3]|max_length[30]|xss_clean');
         $this->form_validation->set_rules('contact', 'Contact', 'trim|required|numeric');
@@ -399,6 +413,7 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['ebooks'] = $this->admin_model->getEBooks();
+        $view['countCartItems'] = $this->countCartItems();
 
         $view['admin_view'] = "admin/allEbooks";
         $this->load->view("layouts/admin_layout", $view);
@@ -408,8 +423,8 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['category'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
-        
         $a = array();
 
         $config_img = [
@@ -429,13 +444,11 @@ class Admin extends CI_Controller
         $this->form_validation->set_rules('author', 'Author Name', 'trim|required|alpha_numeric_spaces|strip_tags[author]');
         $this->form_validation->set_rules('categoryId', 'Category', 'trim|required');
 
-        if (!$this->form_validation->run() && $this->upload->do_upload() == FALSE) 
-        {
+        if (!$this->form_validation->run() && $this->upload->do_upload() == FALSE) {
 
             $view['admin_view'] = "admin/addEBook";
             $this->load->view('layouts/admin_layout', $view);
-        } else
-        {
+        } else {
 
             $a = [
                 '1' => $this->uploadFile($config_img, 'userfile2'),
@@ -445,23 +458,23 @@ class Admin extends CI_Controller
             $file_path = base_url("uploads/files_ebook/" . $a['2']['raw_name'] . $a['2']['file_ext']);
             $img_path = base_url("uploads/image/" . $a['1']['raw_name'] . $a['1']['file_ext']);
 
-             $data = array(
-                 'ebook_name' => $this->input->post('ebook_name'),
-                 'description' => $this->input->post('description'),
-                 'author' => $this->input->post('author'),
-                 'categoryId' => $this->input->post('categoryId'),
-                 'book_file' => $file_path,
-                 'book_image' => $img_path,
-             );
+            $data = array(
+                'ebook_name' => $this->input->post('ebook_name'),
+                'description' => $this->input->post('description'),
+                'author' => $this->input->post('author'),
+                'categoryId' => $this->input->post('categoryId'),
+                'book_file' => $file_path,
+                'book_image' => $img_path,
+            );
 
-             $this->load->model('admin_model');
-             if ($this->admin_model->addEBook($data)) {
-                 $this->session->set_flashdata('success', 'Book added successfully');
-                 redirect('admin/allEBooks');
-             } else {
-                 $this->session->set_flashdata('error', 'Book could not added!');
-                 redirect('admin/allEBooks');
-             }
+            $this->load->model('admin_model');
+            if ($this->admin_model->addEBook($data)) {
+                $this->session->set_flashdata('success', 'Book added successfully');
+                redirect('admin/allEBooks');
+            } else {
+                $this->session->set_flashdata('error', 'Book could not added!');
+                redirect('admin/allEBooks');
+            }
         }
     }
 
@@ -469,33 +482,31 @@ class Admin extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['ebookDetail'] = $this->admin_model->getEBookDetail($id);
+        $view['countCartItems'] = $this->countCartItems();
 
-        if($this->admin_model->getEBookDetail($id))
-		{
-			$view['admin_view'] = "admin/eBookDetail";
-			$this->load->view('layouts/admin_layout', $view);
-		}
-		else
-		{
-			$view['admin_view'] = "include/404";
-			$this->load->view('layouts/admin_layout', $view);
-		}
-
+        if ($this->admin_model->getEBookDetail($id)) {
+            $view['admin_view'] = "admin/eBookDetail";
+            $this->load->view('layouts/admin_layout', $view);
+        } else {
+            $view['admin_view'] = "include/404";
+            $this->load->view('layouts/admin_layout', $view);
+        }
     }
 
     public function deleteEBook($id)
     {
-		$this->load->model('admin_model');
-		$this->admin_model->deleteEBook($id);
+        $this->load->model('admin_model');
+        $this->admin_model->deleteEBook($id);
 
-		$this->session->set_flashdata('success', '<i class= "fas fa-trash text-danger"></i> E-Book deleted successfully.');
-		redirect('admin/allEBooks');
+        $this->session->set_flashdata('success', '<i class= "fas fa-trash text-danger"></i> E-Book deleted successfully.');
+        redirect('admin/allEBooks');
     }
 
     public function editEBook($id)
     {
         $this->load->model('admin_model');
         $view['category'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
 
         $view['ebookDetail'] = $this->admin_model->getEBookDetail($id);
 
@@ -517,7 +528,7 @@ class Admin extends CI_Controller
         $this->form_validation->set_rules('description', 'Description', 'trim|required|min_length[100]|strip_tags[description]');
         $this->form_validation->set_rules('author', 'Author Name', 'trim|required|alpha_numeric_spaces|strip_tags[author]');
         $this->form_validation->set_rules('categoryId', 'Category', 'trim|required');
-     
+
 
         if (!$this->form_validation->run()) {
 
@@ -541,8 +552,7 @@ class Admin extends CI_Controller
             $img_path = base_url("uploads/image/" . $a['1']['raw_name'] . $a['1']['file_ext']);
 
 
-            if (!empty($_FILES['userfile2']['name'])) 
-            {
+            if (!empty($_FILES['userfile2']['name'])) {
 
                 $data = array(
                     'ebook_name' => $this->input->post('ebook_name'),
@@ -551,9 +561,7 @@ class Admin extends CI_Controller
                     'categoryId' => $this->input->post('categoryId'),
                     'book_image' => $img_path,
                 );
-
-            } elseif(!empty($_FILES['userfile3']['name']))
-            {
+            } elseif (!empty($_FILES['userfile3']['name'])) {
 
                 $data = array(
                     'ebook_name' => $this->input->post('ebook_name'),
@@ -562,9 +570,7 @@ class Admin extends CI_Controller
                     'categoryId' => $this->input->post('categoryId'),
                     'book_file' => $file_path,
                 );
-
-            } else 
-            {
+            } else {
                 $data = array(
                     'ebook_name' => $this->input->post('ebook_name'),
                     'description' => $this->input->post('description'),
@@ -589,7 +595,7 @@ class Admin extends CI_Controller
     public function uploadFile($data = array(), $filename)
     {
         $this->upload->initialize($data);
-  
+
 
         if ($this->upload->do_upload($filename)) {
             $a = $this->upload->data();
@@ -599,5 +605,136 @@ class Admin extends CI_Controller
         return $a;
     }
 
+    public function allOrders()
+    {
+        $this->load->model('admin_model');
+        $view['orders'] = $this->admin_model->getOrders();
+        $view['admin_view'] = 'admin/allOrders';
+        $view['countCartItems'] = $this->countCartItems();
+
+        $this->load->view('layouts/admin_layout', $view);
+    }
+
+    public function orderDetail($id)
+    {
+        $this->load->model('admin_model');
+        $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
+
+        $this->load->model('admin_model');
+        $order = $this->admin_model->getOrderDetail($id);
+        $orderItems = $this->admin_model->getOrderItems($id);
+        if ($order && $orderItems) {
+            $view['orderDetail'] = $this->admin_model->getOrderDetail($id);
+            $view['orderItems'] = $this->admin_model->getOrderItems($id);
+
+            $view['admin_view'] = 'admin/orderDetail';
+            $this->load->view('layouts/admin_layout', $view);
+        } else {
+            $view['admin_view'] = "include/404noOrder";
+            $this->load->view('layouts/admin_layout', $view);
+        }
+    }
+
+    public function acceptOrder($id)
+    {
+        $this->load->model('admin_model');
+        $data = array(
+            'status' => 1
+        );
+        $accept = $this->admin_model->acceptOrder($id, $data);
+        if ($accept) {
+            $this->session->set_flashdata('success', 'Order is accepted');
+            redirect('admin/orderDetail/' . $id . '');
+        }
+    }
+
+    public function deleteOrder($id)
+    {
+        $this->load->model('admin_model');
+        $delete = $this->admin_model->deleteOrder($id);
+        if ($delete) {
+            $this->session->set_flashdata('success', '<i class= "fas fa-trash text-danger"></i> Order is canceled');
+            redirect('admin/allOrders');
+        }
+    }
+
+    public function allDeliveredOrders()
+    {
+        $this->load->model('admin_model');
+		$view['orders'] = $this->admin_model->getAllDeliveredOrders();
+        $view['countCartItems'] = $this->countCartItems();
+
+		$view['admin_view'] = "admin/deliveredOrders";
+		$this->load->view('layouts/admin_layout', $view);
+    }
+
+    public function waitingsDeliver()
+	{
+		$this->load->model('admin_model');
+		$view['orders'] = $this->admin_model->getOrdersWaitingDeliver();
+        $view['countCartItems'] = $this->countCartItems();
+
+		$view['admin_view'] = "admin/waitingsDeliver";
+		$this->load->view('layouts/admin_layout', $view);
+	}
+
+	public function deliveryDetail($id)
+	{
+        $this->load->model('admin_model');
+        $view['categories'] = $this->admin_model->getCategory();
+        $view['countCartItems'] = $this->countCartItems();
+
+        $this->load->model('admin_model');
+        $order = $this->admin_model->getOrderDetail($id);
+        $orderItems = $this->admin_model->getOrderItems($id);
+        if ($order && $orderItems) {
+            $view['orderDetail'] = $this->admin_model->getOrderDetail($id);
+            $view['orderItems'] = $this->admin_model->getOrderItems($id);
+
+            $view['admin_view'] = 'admin/deliveryDetail';
+            $this->load->view('layouts/admin_layout', $view);
+        } else {
+            $view['admin_view'] = "include/404noOrder";
+            $this->load->view('layouts/admin_layout', $view);
+        }
+	}
+
+	public function confirmDelivery($id)
+	{
+        $data = array(
+			'del_status' => 1
+		);
+		$this->load->model('admin_model');
+		if($this->admin_model->confirmDelivery($id, $data))
+		{
+			$this->session->set_flashdata('success','Order is delivered!');
+			redirect('admin/waitingsDeliver');
+		}
+	}
+
+	public function cancleDelivery($id)
+	{
+        $data = array(
+			'del_status' => 0
+		);
+		$this->load->model('admin_model');
+		if($this->admin_model->cancleDelivery($id, $data))
+		{
+			$this->session->set_flashdata('success','Order is canceled.');
+			redirect('admin/waitingsDeliver');
+		}
+	}
+
+    private function countCartItems()
+    {
+        if($this->session->userdata('id'))
+        {
+            $this->load->model('user_model');
+            $countCartItems = $this->user_model->getCartItemCount();
+            return $countCartItems;
+
+        }
+    }
 
 }

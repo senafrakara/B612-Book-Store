@@ -45,7 +45,7 @@ if ($this->session->flashdata('error')) {
                         <div class="price"> <?= strip_tags($bookDetail->price) ?> TL</div>
                     </div>
 
-                    <div><?php print '<a href="" class="btn btn-outline-success btn-sm btn-add-to-cart"><i class="fas fa-shopping-cart"></i> Add to cart</a>'; ?></div>
+                    <div><?php print '<a href="' . base_url('cart/addCart/'). $bookDetail->id . '" class="btn btn-outline-success btn-sm btn-add-to-cart"><i class="fas fa-shopping-cart"></i> Add to cart</a>'; ?></div>
                     <?php if ($this->session->userdata('id')) : ?>
                         <form action="<?=base_url() . 'user_account/favoriteBook/' . $bookDetail->id?>" method="POST">
 
@@ -105,12 +105,12 @@ if ($this->session->flashdata('error')) {
 </div>
 
 <script>
-    $(document).ready(function() {
-        // MDB Lightbox Init
-        $(function() {
-            $("#mdb-lightbox-ui").load("mdb-addons/mdb-lightbox-ui.html");
-        });
-    });
+    // $(document).ready(function() {
+    //     // MDB Lightbox Init
+    //     $(function() {
+    //         $("#mdb-lightbox-ui").load("mdb-addons/mdb-lightbox-ui.html");
+    //     });
+    // });
 
     function FavoriteDown(x) {
         x.classList.toggle("fa-thumbs-down");

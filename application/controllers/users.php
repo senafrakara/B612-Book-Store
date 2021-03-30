@@ -48,6 +48,7 @@ class Users extends CI_Controller
         if ($this->form_validation->run() == FALSE) {
             $this->load->model('admin_model');
             $view['categories'] = $this->admin_model->getCategory();
+            $view['countCartItems'] = $this->countCartItems();
 
             $view['user_view'] = "users/registration";
             $this->load->view('layouts/user_layout', $view);
@@ -92,7 +93,7 @@ class Users extends CI_Controller
 
             $this->load->model('admin_model');
             $view['categories'] = $this->admin_model->getCategory();
-
+            $view['countCartItems'] = $this->countCartItems();
             $view['user_view'] = "users/login";
             $this->load->view('layouts/user_layout', $view);
         } else {
@@ -104,6 +105,7 @@ class Users extends CI_Controller
             $user = $this->user_model->login($email, $password);
 
             if ($user) {
+
                 $login_data = array(
                     'user_data' => $user,
                     'id'        => $user->id,
@@ -115,6 +117,44 @@ class Users extends CI_Controller
                 );
 
                 $this->session->set_userdata($login_data);
+                $user_id = $user->id;
+                if ($this->cart->contents()) //if there are some items in cart, then add them into cart item, if there some cart items belongs to this user, and cart content with same book id, update qty in cart item onyl
+                {
+
+                    foreach ($this->cart->contents() as $books) {
+                        $data = array(
+                            'book_id' => $books['id'],
+                            'user_id' => $user_id,
+                            'qty' => $books['qty']
+                        );
+
+                        $this->load->model('admin_model');
+                        $book = $this->admin_model->getBookDetail($books['id']);
+                        if ($book) {
+                            $bookQuantity = $book->quantity;
+                            //burada önce bu kullanıcıya ait olan cart item ların içinde book_id li var mı yok mu kontrol et
+                            //varsa onun qty sini update et
+                            //yoks yenisini ekle.
+                            $this->load->model('user_model');
+                            $check_cartItem = $this->user_model->getCartItem($books['id'], $user_id);
+                            if ($check_cartItem) //eğer böyle bir cart item varsa qty sini content içindekini ekleyerek güncelle
+                            {
+                                $this->load->model('user_model');
+                                $totalQuantity = $check_cartItem->qty + $books['qty'];
+                                if ($totalQuantity < $bookQuantity) //if there is enough stock for that book in the cart content, then add it into cart items
+                                {
+                                    $this->user_model->updateCartItemQTY($check_cartItem->id, $check_cartItem->qty, $books['qty']);
+                                }
+                                   
+                            } else {
+                                //direkt cart item a ekle eğer o kitap benim cart itemlarım arasında yoksa
+                                $this->load->model('user_model');
+                                $this->user_model->addCartItem($data);
+                            }
+                        }
+                    }
+                    $this->cart->destroy();
+                }
 
                 if ($user->type == 'A') {
 
@@ -169,10 +209,11 @@ class Users extends CI_Controller
         $bookCount = $this->user_model->getBooks($config['per_page'], $this->uri->segment(3));
         if ($bookCount != 0) {
             $view['books'] = $this->user_model->getBooks($config['per_page'], $this->uri->segment(3));
-
+            $view['countCartItems'] = $this->countCartItems();
             $view['user_view'] = "users/allBooks";
             $this->load->view('layouts/user_layout', $view);
         } else {
+            $view['countCartItems'] = $this->countCartItems();
             $view['user_view'] = "include/404product";
             $this->load->view('layouts/user_layout', $view);
         }
@@ -182,22 +223,22 @@ class Users extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
-
-        $this->form_validation->set_rules('review', 'Review', 'trim|required|min_length[10]|xss_clean');
+        $view['countCartItems'] = $this->countCartItems();
+        $this->form_validation->set_rules('comment', 'Comment', 'trim|required|min_length[10]|xss_clean');
 
         $data = array(
             'book_id' => $id,
             'user_id' => $this->session->userdata('id')
         );
 
-        if ($this->form_validation->run() == FALSE) {
+        if (!$this->form_validation->run()) {
             $this->load->model('admin_model');
             $view['bookDetail'] = $this->admin_model->getBookDetail($id);
 
             $this->load->model('user_model');
             $view['comments'] = $this->user_model->getComments($id);
             $view['isFavorite'] = $this->user_model->isInFavoriteList($data);
-
+           
             if ($this->admin_model->getBookDetail($id)) {
                 $view['user_view'] = "users/bookDetail";
                 $this->load->view('layouts/user_layout', $view);
@@ -227,7 +268,7 @@ class Users extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
-
+        $view['countCartItems'] = $this->countCartItems();
 
         $this->load->model('user_model');
         $bookCount = $this->user_model->getEBooks();
@@ -247,7 +288,7 @@ class Users extends CI_Controller
     {
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
-
+        $view['countCartItems'] = $this->countCartItems();
 
         $this->load->model('user_model');
 
@@ -265,6 +306,7 @@ class Users extends CI_Controller
 
     public function deleteComment($id)
     {
+        $view['countCartItems'] = $this->countCartItems();
         $this->load->model('user_model');
         $this->user_model->deleteComment($id);
 
@@ -274,6 +316,7 @@ class Users extends CI_Controller
 
     public function search()
     {
+        $view['countCartItems'] = $this->countCartItems();
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
 
@@ -301,6 +344,7 @@ class Users extends CI_Controller
 
     public function aboutUs()
     {
+        $view['countCartItems'] = $this->countCartItems();
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
         $view['user_view'] = 'include/aboutUs';
@@ -309,6 +353,7 @@ class Users extends CI_Controller
 
     public function contactUs()
     {
+        $view['countCartItems'] = $this->countCartItems();
         $this->load->model('admin_model');
         $view['categories'] = $this->admin_model->getCategory();
 
@@ -350,6 +395,7 @@ class Users extends CI_Controller
 
     private function sendMailContactUs($from_email, $subject, $message)
     {
+        
         $this->load->library('email');
         $config = array(
             "protocol"  => "smtp",
@@ -509,6 +555,17 @@ class Users extends CI_Controller
         $this->email->set_header('Content-Type', 'text/html');
 
         $this->email->send();
+    }
+
+    private function countCartItems()
+    {
+        if($this->session->userdata('id'))
+        {
+            $this->load->model('user_model');
+            $countCartItems = $this->user_model->getCartItemCount();
+            return $countCartItems;
+
+        }
     }
 
     // private function __generateToken($uid)

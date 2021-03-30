@@ -21,6 +21,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
     <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.slim.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/priceCheck.js'); ?>"></script>
 
     <title>B612 Book Store | MY ACCOUNT</title>
     <link rel="shortcut icon" type="image/png" href="<?= base_url('style/img/logo.png'); ?>">
@@ -41,7 +44,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     </div>
                     <div class="col-md-7">
                         <div class="row">
-                        <div class="col-md-9 text-center">
+                            <div class="col-md-9 text-center">
                                 <div class="search-bar">
                                     <?= form_open('users/search') ?>
                                     <span class="sb"><input type="search" name="search" placeholder="Find your books"></span>
@@ -50,8 +53,26 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="ic-cart"><a href="<?= base_url() ?>cart"><i class="fas fa-shopping-cart"></i> Cart</a></div>
-
+                                <div class="ic-cart"><a href="<?= base_url('cart') ?>"><i class="fas fa-shopping-cart"></i> Cart</a></div>
+                                <?php if ($this->cart->contents()) : ?>
+                                    <div class="cart-count">
+                                        <div>
+                                            <?php $rows = count($this->cart->contents());
+                                            print $rows; ?>
+                                        </div>
+                                    </div>
+                                <?php elseif ($this->session->userdata('id')) : ?>
+                                    <div class="cart-count">
+                                        <div>
+                                            <?php
+                                            if ($this->session->userdata('id')) {
+                                                $this->load->model('user_model');
+                                                $countCartItems = $this->user_model->getCartItemCount();
+                                                print $countCartItems->count;
+                                            } ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
 
                             </div>
                         </div>
@@ -82,9 +103,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             <h3 style="text-align: center">Your Bag</h3>
                             <hr>
                             <div class="user-panel">
-                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/allFavorites')?>">My Favorites</a>
-                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/user_orders')?>">My Orders</a>
-                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/editAccount')?>">Edit Account</a>
+                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/allFavorites') ?>">My Favorites</a>
+                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/user_orders') ?>">My Orders</a>
+                                <a class="btn btn-primary dropdown-item waves-effect waves-light user-panel-button" href="<?= base_url('user_account/editAccount') ?>">Edit Account</a>
                             </div>
 
 

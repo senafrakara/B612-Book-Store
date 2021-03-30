@@ -7,7 +7,7 @@
             <li><a href="<?= base_url()?>admin/allBooks"><i class="fas fa-book"></i> Books</a></li>
             <li><a href="<?= base_url()?>admin/getAllUser"><i class="fas fa-users"></i> Users</a></li>
             <li><a href="<?= base_url()?>admin/allEBooks"><i class="fas fa-chalkboard-teacher"></i> E-books</a></li>
-            <li><a href="<?= base_url()?>admin/"><i class="fas fa-cart-arrow-down"></i> Orders</a></li>
+            <li><a href="<?= base_url()?>admin/allOrders"><i class="fas fa-cart-arrow-down"></i> Orders</a></li>
 
             <li><a href="<?= base_url()?>users/logout"><i class="fas fa-power-off"></i> Logout</a></li>
         </ul>

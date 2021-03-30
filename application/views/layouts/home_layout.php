@@ -18,6 +18,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
     <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.slim.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/priceCheck.js'); ?>"></script>
 
     <title>B612 Book Store | Discover New Worlds</title>
     <link rel="shortcut icon" type="image/png" href="<?= base_url('style/img/logo.png'); ?>">
@@ -45,8 +48,27 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="ic-cart"><a href="<?= base_url() ?>"><i class="fas fa-shopping-cart"></i> Cart</a></div>
-
+                                <div class="ic-cart"><a href="<?= base_url('cart') ?>"><i class="fas fa-shopping-cart"></i> Cart</a></div>
+                                <?php if ($this->cart->contents()) : ?>
+                                    <div class="cart-count">
+                                        <div>
+                                            <?php $rows = count($this->cart->contents());
+                                            print $rows; ?>
+                                        </div>
+                                    </div>
+                                <?php elseif ($this->session->userdata('id')) : ?>
+                                    <div class="cart-count">
+                                        <div>
+                                            <?php
+                                            if ($this->session->userdata('id')) {
+                                                $this->load->model('user_model');
+                                                $countCartItems = $this->user_model->getCartItemCount();
+                                                print $countCartItems->count;
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -144,8 +166,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <h3>Services</h3>
 
                         <ul>
-                            <li><a href="<?= base_url('') ?>">Buy Books</a></li>
-                            <li><a href="<?= base_url('') ?>">Find E-books</a></li>
+                            <li><a href="<?= base_url('users/allBooks') ?>">Buy Books</a></li>
+                            <li><a href="<?= base_url('users/allEBooks') ?>">Find E-books</a></li>
 
                         </ul>
                     </div>

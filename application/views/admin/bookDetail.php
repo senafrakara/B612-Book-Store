@@ -1,14 +1,14 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8 col-xs-12" id="book-detail">
-            <div id="table-header"><?= strip_tags($book_detail->book_name) ?></div><br> 
+            <div id="table-header"><?= strip_tags($book_detail->book_name) ?></div><br>
             <!-- book_detail comes from admin controller->allBooks functions, we give the book_detail as argument as data to this view-->
 
             <div class="row">
                 <div class="col-sm-4" id="book-img"><?php echo '<img src = "' . strip_tags($book_detail->book_image) . '" alt = "">'; ?></div>
                 <div class="col-sm-8">
-                    <div class="book-info">
-                    
+                    <div class="book-info" style="text-align: right;">
+
                         <div>Author: <?= strip_tags($book_detail->author) ?></div>
                         <div>Publisher: <?= strip_tags($book_detail->publisher) ?></div>
                         <div>Category: <?= strip_tags($book_detail->category) ?></div>

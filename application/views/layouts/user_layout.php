@@ -18,6 +18,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <link rel="stylesheet" type="text/css" href="<?= base_url('style/css/style.css'); ?>">
 
     <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.slim.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/jquery-3.2.1.js'); ?>"></script>
+    <script type="text/javascript" src="<?= base_url('style/js/priceCheck.js'); ?>"></script>
 
     <title>B612 Book Store | User pages</title>
     <link rel="shortcut icon" type="image/png" href="<?= base_url('style/img/logo.png'); ?>">
@@ -46,8 +49,26 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="ic-cart"><a href="<?= base_url() ?>cart"><i class="fas fa-shopping-cart"></i> Cart</a></div>
-
+                                <div class="ic-cart"><a href="<?= base_url('cart') ?>"><i class="fas fa-shopping-cart"></i> Cart</a></div>
+                                <?php if ($this->cart->contents()) : ?>
+                                    <div class="cart-count">
+                                        <div>
+                                            <?php $rows = count($this->cart->contents());
+                                            print $rows; ?>
+                                        </div>
+                                    </div>
+                                <?php elseif ($this->session->userdata('id')) : ?>
+                                    <div class="cart-count">
+                                        <div>
+                                            <?php
+                                            if ($this->session->userdata('id')) {
+                                                $this->load->model('user_model');
+                                                $countCartItems = $this->user_model->getCartItemCount();
+                                                print $countCartItems->count;
+                                            } ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
 
                             </div>
                         </div>
