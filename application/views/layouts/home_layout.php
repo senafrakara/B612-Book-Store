@@ -175,9 +175,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 <div class="col-md-4">
                     <div class="widget">
                         <h3>Contact</h3>
-                        <p>Communication is very much important for building good customer relationship. You are always welcome.</p>
+                        <p>You are always welcome.</p>
                         <div id="social-icon">
                             <span><a href="https://github.com/senafrakara" title="Github" target="_blank"><i class="fab fa-github"></i></a></span>
+                            <span><a href="https://www.linkedin.com/in/nursena-karakulah/" title="Linkedin" target="_blank"><i class="fab fa-linkedin"></i></a></span>
                         </div>
                     </div>
                 </div>
