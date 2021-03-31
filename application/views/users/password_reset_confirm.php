@@ -12,7 +12,7 @@
         <input type="password" name="cnewpass" class="form-control" placeholder="Confirm password" required>
       </div>
       <div class="form-group">
-        <input type="submit" name="submit" class="btn btn-success btn-block" value="Reset Pass">
+        <input type="submit" name="submit" class="btn btn-success btn-block" value="Reset Password">
       </div>
   </div>
 </div>
